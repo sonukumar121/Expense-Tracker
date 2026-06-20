@@ -1,0 +1,260 @@
+import React, { useState } from "react";
+import "../App.css"; // optional for styling
+import { collection, addDoc,  getDocs , deleteDoc , doc , updateDoc } from "firebase/firestore";
+import { db , app } from "./firebaseConfig";
+// import { app } from "./firebaseConfig";
+import { getAuth } from "firebase/auth"; 
+const auth = getAuth(app);
+
+const Home = () => {
+  const [todo, setTodo] = useState("");
+  const [list, setList] = useState([]);
+  const [check, setCheck] = useState(true);
+  
+
+const add = async () =>  // firebase save data
+  {
+  if (!todo.trim()) return;
+  if(todo==" ")
+  {
+    return;
+  }
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const docRef=await addDoc(
+    collection(db, "users", user.uid, "todos"),
+    {
+      text: todo,
+      completed: false,
+      email: user.email,  
+      uid: user.uid,
+      createdAt: new Date(),
+    }
+  );
+    setList([...list, {
+    id: docRef.id,
+    text: todo,
+    completed: false,
+    email: user.email,
+    uid: user.uid,
+  }]);
+
+  setTodo("");
+};
+
+
+
+
+  const del = async (index) => 
+  {
+    const todoo=list[index];
+    const user = auth.currentUser;
+     if (!user) return;
+    
+   await deleteDoc(doc(db, "users", user.uid, "todos",todoo.id));
+    
+
+    const newlist = list.filter((item) => item !== list[index]);
+    setList(newlist);
+  };
+
+
+
+const edit = async (index) => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+
+
+
+  const todoItem = list[index];
+  setTodo(todoItem.text);
+  setCheck(false);
+
+  await updateDoc(
+    doc(db, "users", user.uid, "todos", todoItem.id),
+    {
+      text:todo,
+    }
+    
+  );
+  const newlist = list.filter((item) => item.id !== todoItem.id);
+  setList(newlist);
+  setCheck(true);
+};
+
+   
+  const show=async ()=>
+  {
+    const user = auth.currentUser;
+
+
+  if (!user) {
+    console.log("User not logged in");
+    return;
+  }
+    const snapshot = await getDocs(collection(db,"users",user.uid,"todos"));
+
+    const todos = snapshot.docs.map((doc) => ({
+    id: doc.id,...doc.data(),
+  }));
+
+  setList(todos);
+  }
+
+ 
+
+  return (
+    <div className="container">
+      <h1 className="title">Todo App</h1>
+
+      <div className="inputSection">
+        <input
+          value={todo}
+          className="input"
+          placeholder="Enter Todo..."
+          onChange={(e) => setTodo(e.target.value)}
+        />
+
+        <button className="addBtn" onClick={add}>
+          {check ? "Add" : "Save"}
+        </button>
+{/* <div></div> */}
+         <button className="showBtn" onClick={show}>
+          {check ? "Show" : ""}
+        </button>
+      </div>
+
+      {list.map((item, index) => (
+        <div className="todoCard" key={index}>
+          <p className="todoText">{item.text}</p>
+
+         <div className="iconBox">
+            <button onClick={() => edit(index)}>✏️</button>
+            
+            <button onClick={() => del(index)}>🗑️</button>  
+        </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Home;
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------
+PRODUCT CART  
+import heart from "../assets/heart.png"
+import "../App.css"; 
+import rlogo from "./rightlogo.png"
+import llogo from "./leftlogo.png"
+import { useState } from "react";
+
+const ProductCart = ({ products,type }) => {
+  
+//   //  const [left,setleft]=useState(0);
+//    const [right,setright]=useState(0);
+//    const [rslide,setRslide]=useState(4);
+//    const [lslide,setLslide]=useState(0);
+//    const [hide,sethide]=useState(1); //true->1 =hide
+   
+// // 3,4,5,6,7 --> 8,9,10,11,12
+
+  
+
+//        const leftbanner=()=>{
+
+        
+//         if(right>0)
+//         {
+//           setLslide(prev=>prev-5);
+//           setright(prev=>prev-1);
+//             // sethide(true);
+//             setRslide(prev=>prev-5);
+          
+//         }
+
+        
+
+       
+        
+//     };
+
+
+//       const rightbanner=()=>{
+//       setRslide(prev=>prev+5);
+//       setright(prev=>prev+1);
+//       sethide(false);
+//       setLslide(prev=>prev+5);
+//     };
+
+
+
+
+
+//   // console.log(products);
+//   return (
+//    <div className={`osize-box ${type === "bsellers" ? "bsellers-box" : "category-box"}`}>
+//       <div className="osize-innerbox">
+//               <div><h3>Oversized Tees Haul</h3></div>
+//                <div><h5>BestSellers in One Place</h5></div>
+//       </div>
+
+//         <div className={`osize-imgbox ${type === "bsellers" ? "bsellers-box" : "category-box"}`}>
+         
+//           {products.map((item,index) => {
+//             if(type==="bsellers")
+//             {
+//               return (
+                
+//                <div className="bsellers-mainbox">
+              
+//                     <div className="bsellers-imgbox" style={{ transform: `translateX(-${right * 100}vw)`,transition: "transform 0.4s ease"}} >
+//                     { <img key={index} src={item} />}
+
+//                         {index===(lslide) ? <img key={index} onClick={leftbanner}style={{position:"absolute",height:"7vw",right:"0.4vw",bottom:"2vw",top:"12vw",filter: "brightness(0) invert(1)",cursor:"pointer",display:hide ? "none":"block" }}src={llogo} />:null}
+//                         {index===(rslide)? <img key={index} onClick={rightbanner}style={{position:"absolute",height:"7vw",right:"0.4vw",bottom:"2vw",top:"12vw",filter: "brightness(0) invert(1)",cursor:"pointer"}}src={rlogo} />:null}
+//                         {/* {index===(4*(right+1))? <img key={index} onClick={rightbanner}style={{positin:"absolute",height:"7vw",right:"0.4vw",bottom:"2vw",top:"12vw",filter: "brightness(0) invert(1)"}}src={rlogo} />:null} */}
+
+                  
+//                     </div>
+
+                  
+
+//                       <div className="bsellers-innerbox">
+//                           <div>
+
+//                            <div><p>Bewakoof®</p></div>
+//                              <div><img style={{height:"1vw"}}src={heart}/></div>
+//                           </div>
+                          
+//                           <div><p >Women's Onion Pink Applique Oversized Crop</p></div>
+//                           <div>
+//                              <span>₹999</span> <span>₹2,499 </span> <span>56% off</span>
+//                           </div>
+//                       </div>
+                
+//                 </div>
+
+              
+//             );
+//             }
+//              return <img src={item}/>;
+            
+//           })}
+//         </div>
+      
+//     </div>
+//   );
+// };
+
+// export default ProductCart;
