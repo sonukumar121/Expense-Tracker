@@ -263,7 +263,14 @@ const [date, setDate] = useState(null);
   
 useEffect(() => {
    getexp();
-}, [date]);
+}, []);
+
+  useEffect(() => {
+  window.flatpickr("#datePicker", {
+    dateFormat: "Y-m-d",
+    disableMobile: true,
+  });
+}, []);
 
 
   return (
@@ -395,17 +402,10 @@ useEffect(() => {
             />
     */}
 
-  <Flatpickr
-  value={date}
-  options={{
-    dateFormat: "d-m-Y",
-    allowInput: false, // typing band
-    disableMobile: true, // mobile me bhi flatpickr use hoga
-  }}
-  onChange={(selectedDates) => {
-    setDate(selectedDates[0]);
-  }}
+<input
+  id="datePicker"
   placeholder="DD-MM-YYYY"
+  onChange={filterhandlerDats}
 />
 
             <select
