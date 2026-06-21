@@ -70,9 +70,13 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     console.log(data.message);
 
-    if (data.message === "signup successfully") {
+    if (data.message === "Signup successful") {
       toast.success("Signup Successful 🚀");
-      setlog(true);
+       const isLoggedIn = true;
+
+      setlog(isLoggedIn);
+
+      // setlog(true);
       setname("");
       setemail("");
       setpassword("");
@@ -160,5 +164,3 @@ const API_URL = import.meta.env.VITE_API_URL;
     </div>
   );
 }
-
-

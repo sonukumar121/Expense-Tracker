@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 export const Dashboard = ({ setIslogin }) => {
@@ -17,6 +17,9 @@ export const Dashboard = ({ setIslogin }) => {
   const [expense, setexpense] = useState(0);
   const [balance, setbalance] = useState(0);
 
+  
+// const [search, setsearch] = useState("");
+// const [dat, setdat] = useState("");
   // const todayd =
   //   String(d.getDate()).padStart(2, "0") + "/" +
   //   String(d.getMonth() + 1).padStart(2, "0") + "/" +
@@ -79,7 +82,7 @@ export const Dashboard = ({ setIslogin }) => {
     });
 
     const data = await response.json();
-    console.log(data.message, data.expense);
+    // console.log(data.message, data.expense);
     settracker({
       date: "",
       category: "",
@@ -89,6 +92,7 @@ export const Dashboard = ({ setIslogin }) => {
     });
     setcheck(true);
     setType("");
+    getexp();           //change-------------------
   };
 
   const logouthandler = async () => {
@@ -122,14 +126,20 @@ export const Dashboard = ({ setIslogin }) => {
     });
 
     const data = await response.json();
-    console.log(data.message, data.expense);
+    // console.log(data.message, data.expense);
     // const data = await response.json();
+    // console.log(data.message, data.expense ,data.incomet ,data.expenset);
     setlist(data.expenses);
 
     setincome(data.incomet);
     setexpense(data.expenset);
     const bal = data.incomet - data.expenset;
+    console.log("BAL:", bal);
     setbalance(bal);
+
+//     console.log("income:", income);
+// console.log("expense:", expense);
+// console.log("balance:", balance);
   };
 
   const delexp = async (id) => {
@@ -147,25 +157,26 @@ export const Dashboard = ({ setIslogin }) => {
     });
 
     const data = await response.json();
-    console.log(data.message, data.expense);
+    // console.log(data.message, data.expense);
+     getexp();           //change-------------------
   };
 
-  const filterhandler = async (e) => {
-    const val = e.target.value;
-    // const dat="";
-    
-    if(e.target.name==="dats")
-    {
-      var dat=e.target.value;
-    }
-    console.log(typeof(val));
-    if (val === "") {
-      getexp(); // saare expenses fetch karo
-      return;
-    }
+
+
+
+  
+  const filterhandlerNots = async (e) => {
+
+    // console.log("before filter msg date= ",typeof(val) ,val);
+    // if (val === "") {
+    //   getexp(); // saare expenses fetch karo
+    //   return;
+    // }
+    const search=e.target.value;
+   
 
     const response = await fetch(
-      `${API_URL}/api/expense/search?search=${val}&dat=${dat}`,
+      `${API_URL}/api/expense/search?search=${search}`,
       {
         method: "GET",
         credentials: "include",
@@ -177,13 +188,83 @@ export const Dashboard = ({ setIslogin }) => {
     );
 
     const data = await response.json();
-    console.log(data.message, typeof data.expense);
+   
     setlist(data.expenses);
   };
 
-  useEffect(() => {
-    getexp();
-  }, []);
+
+
+  
+  
+  const filterhandlerDats = async (e) => {
+
+    // console.log("before filter msg date= ",typeof(val) ,val);
+    // if (val === "") {
+    //   getexp(); // saare expenses fetch karo
+    //   return;
+    // }
+    const datee=e.target.value;
+    
+   
+   console.log("URL = ", `${API_URL}/api/expense/date?datee=${datee}`);
+    const response = await fetch(
+      `${API_URL}/api/expense/date?datee=${datee}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // body: JSON.stringify(),
+      },
+    );
+
+    const data = await response.json();
+  
+    setlist(data.expenses);
+  };
+
+
+
+
+  
+  
+  const filterhandlerCategory = async (e) => {
+
+    // console.log("before filter msg date= ",typeof(val) ,val);
+    // if (val === "") {
+    //   getexp(); // saare expenses fetch karo
+    //   return;
+    // }
+    const category=e.target.value;
+    
+ 
+ 
+    const response = await fetch(
+      `${API_URL}/api/expense/category?category=${category}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // body: JSON.stringify(),
+      },
+    );
+
+    const data = await response.json();
+   
+    setlist(data.expenses);
+  };
+
+
+
+
+  
+useEffect(() => {
+   getexp();
+}, []);
+
 
   return (
     <div className="dashboard-layout">
@@ -298,28 +379,44 @@ export const Dashboard = ({ setIslogin }) => {
 
           <div className="filter-controls">
             <input
-              onChange={(e) => filterhandler(e)}
+             onChange={(e) =>filterhandlerNots(e)}
               name="nots"
               type="text"
               placeholder="Search expenses..."
               className="search-input"
             />
 
-            <input
-              onChange={(e) => filterhandler(e)}
+            {/* <input
+               onChange={(e) =>filterhandlerDats(e)}
               name="dats"
               style={{ border: "none", padding: "1vw" }}
               type="date"
+                
             />
+    */}
+
+   <DatePicker
+  onChange={(date) =>
+    filterhandlerDats({
+      target: {
+        value: date,
+      },
+    })
+  }
+  placeholderText="DD-MM-YYYY"
+  dateFormat="dd-MM-yyyy"
+  className="search-input"
+/>
+
 
             <select
-              onChange={(e) => filterhandler(e)}
+              onChange={(e) => filterhandlerCategory(e)}
               className="filter-dropdown"
               value={tracker.category}
               style={{ cursor: "pointer" }}
               defaultValue=""
               name="category"
-              onChange={(e) => exphandler(e)}
+              
             >
               <option value="" disabled>
                 Select Category
