@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/themes/material_blue.css";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -395,19 +395,18 @@ useEffect(() => {
             />
     */}
 
-   <DatePicker
-  onChange={(date) =>
-    filterhandlerDats({
-      target: {
-        value: date,
-      },
-    })
-  }
-  placeholderText="DD-MM-YYYY"
-  dateFormat="dd-MM-yyyy"
-  className="search-input"
+  <Flatpickr
+  value={date}
+  options={{
+    dateFormat: "d-m-Y",
+    allowInput: false, // typing band
+    disableMobile: true, // mobile me bhi flatpickr use hoga
+  }}
+  onChange={(selectedDates) => {
+    setDate(selectedDates[0]);
+  }}
+  placeholder="DD-MM-YYYY"
 />
-
 
             <select
               onChange={(e) => filterhandlerCategory(e)}
