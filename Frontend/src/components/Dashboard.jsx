@@ -263,7 +263,7 @@ const [date, setDate] = useState(null);
   
 useEffect(() => {
    getexp();
-}, []);
+}, [date]);
 
 
   return (
