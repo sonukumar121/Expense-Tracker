@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/themes/material_blue.css";
+// import Flatpickr from "react-flatpickr";
+// import "flatpickr/dist/themes/material_blue.css";
 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -265,12 +265,7 @@ useEffect(() => {
    getexp();
 }, []);
 
-  useEffect(() => {
-  window.flatpickr("#datePicker", {
-    dateFormat: "Y-m-d",
-    disableMobile: true,
-  });
-}, []);
+
 
 
   return (
@@ -393,21 +388,15 @@ useEffect(() => {
               className="search-input"
             />
 
-            {/* <input
+             <input
                onChange={(e) =>filterhandlerDats(e)}
               name="dats"
               style={{ border: "none", padding: "1vw" }}
               type="date"
+
+               />
                 
-            />
-    */}
-
-<input
-  id="datePicker"
-  placeholder="DD-MM-YYYY"
-  onChange={filterhandlerDats}
-/>
-
+    
             <select
               onChange={(e) => filterhandlerCategory(e)}
               className="filter-dropdown"
