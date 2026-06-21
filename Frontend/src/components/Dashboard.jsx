@@ -48,7 +48,7 @@ export const Dashboard = ({ setIslogin }) => {
     "🧾 Taxes",
     "📦 Miscellaneous",
   ];
-
+const [date, setDate] = useState(null);
   const [list, setlist] = useState([]);
   const [tracker, settracker] = useState({
     date: "",
