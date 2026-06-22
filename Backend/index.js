@@ -26,7 +26,7 @@ connectDB().then(() => {
 
 // ---------------- MIDDLEWARE ----------------
 app.use(cors({
-  origin:"http://localhost:5173",
+  origin:"https://expense-tracker-zwsb.onrender.com",
   credentials: true
 }));
 
