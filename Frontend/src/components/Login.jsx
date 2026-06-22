@@ -2,33 +2,29 @@ import "../App.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-export const Login=({ setIslogin })=> {
+import { FcGoogle } from "react-icons/fc";
+export const Login = ({ setIslogin }) => {
   const navigate = useNavigate();
-
 
   const [log, setlog] = useState(true);
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [show, setShow] = useState(false);
-const API_URL = import.meta.env.VITE_API_URL;
-   
+  const API_URL = import.meta.env.VITE_API_URL;
+
   // LOGIN
   const loginhandler = async (e) => {
     e.preventDefault();
-    
 
-
-    const response = await fetch(`${API_URL}/api/users/login`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+    const response = await fetch(`${API_URL}/api/users/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({ email, password }),
+    });
 
     const data = await response.json();
 
@@ -44,27 +40,18 @@ const API_URL = import.meta.env.VITE_API_URL;
     }
   };
 
-
-
-
-
-
-
-
   // SIGNUP
   const signuphandler = async (e) => {
     e.preventDefault();
 
-       const response = await fetch(`${API_URL}/api/users/signup`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
+    const response = await fetch(`${API_URL}/api/users/signup`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({ name, email, password }),
+    });
 
     const data = await response.json();
 
@@ -72,7 +59,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     if (data.message === "Signup successful") {
       toast.success("Signup Successful 🚀");
-       const isLoggedIn = true;
+      const isLoggedIn = true;
 
       setlog(isLoggedIn);
 
@@ -150,17 +137,17 @@ const API_URL = import.meta.env.VITE_API_URL;
               <span onClick={() => setlog(true)}>Login</span>
             </>
           )}
-           
-          {/* <button
+
+          <button className="google-btn"
             onClick={() => {
-              window.location.href =
-                "https://notesappx2.onrender.com/auth/google";
+              window.location.href = "http://localhost:5000/auth/google";
             }}
           >
-            Login with Google
-          </button>  */}
-         </p>
+            <FcGoogle size={20} />
+            Continue with Google
+          </button>
+        </p>
       </div>
     </div>
   );
-}
+};

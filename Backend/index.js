@@ -1,4 +1,5 @@
 import express from "express";
+import "./auth/google.js";
 import dotenv from "dotenv";
 dotenv.config();
 import passport from "passport";
@@ -25,7 +26,7 @@ connectDB().then(() => {
 
 // ---------------- MIDDLEWARE ----------------
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin:"http://localhost:5173",
   credentials: true
 }));
 
@@ -33,6 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
+console.log(passport._strategies);
 // app.use(passport.session());
 // ---------------- ROUTES ----------------
 app.use("/api/expense", expenseRoutes);
@@ -40,21 +42,48 @@ app.use("/api/users", userRoutes);
 
 
 
-// app.get("/",(req,res)=>{
-//   return res.send("backend is running");
-// })
+app.get("/",(req,res)=>{
+  return res.send("backend is running");
+})
 
 
 
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ["profile", "email"],}));
+ 
 
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/",
+  }),
+  async (req, res) => {
+    try {
+      console.log("USER:", req.user);
 
+      if (!req.user) {
+        return res.status(401).send("Google auth failed");
+      }
 
+      const token = jwt.sign(
+        { id: req.user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
 
+      
+  res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+});
 
+      return res.redirect("http://localhost:5173");
 
-
-
-
-
-
-
+    } catch (err) {
+      console.log("ERROR:", err);
+      return res.status(500).send("Internal Server Error");
+    }
+  }
+);

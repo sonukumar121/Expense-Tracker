@@ -20,6 +20,7 @@ passport.use(
           user = await User.create({
             googleId: profile.id,
             name: profile.displayName,
+            email: profile.emails[0].value,
           });
         }
 
@@ -27,16 +28,14 @@ passport.use(
       } catch (error) {
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 // session (agar use kar raha hai)
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
-
-
 
 passport.deserializeUser(async (id, done) => {
   const user = await User.findById(id);

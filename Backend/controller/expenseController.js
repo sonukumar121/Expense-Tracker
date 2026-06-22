@@ -18,36 +18,11 @@ export const addexpense = async (req, res) => {
   }
 };
 
-export const searchexpense = async (req, res) => {
+
+export const filterhandlerNots=async(req,res)=>{
+
   try {
-    const { search,dat } = req.query;
-
-    if (!search) {
-      return res.status(400).json({
-        message: "Search data is required",
-      });
-    }
-
-    if(dat)
-    {
-      const start = new Date(dat);
-    const end = new Date(dat);
-
-    end.setDate(end.getDate() + 1);
-
-    const expenses = await expense.find({
-      userid: req.user.id,
-      date: {
-        $gte: start,
-        $lt: end,
-      },
-    });
-
-    return res.json({ expenses });
-    }
-
-    
-
+    const { search } = req.query;
 
     const expenses = await expense.find({
       userid: req.user.id,
@@ -72,7 +47,65 @@ export const searchexpense = async (req, res) => {
     console.log(err);
     res.status(500).json({ message: "Server error" });
   }
-};
+}
+
+
+
+export const filterhandlerDats=async(req,res)=>{
+   try {
+    const { datee } = req.query;
+
+    const start = new Date(datee);
+    const end = new Date(datee);
+
+    end.setDate(end.getDate() + 1);
+
+    const expenses = await expense.find({
+      userid: req.user.id,
+      date: {
+        $gte: start,
+        $lt: end,
+      },
+    });
+
+    res.json({ expenses });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+
+export const filterhandlerCategory=async(req,res)=>{
+    try {
+    const { category } = req.query;
+
+    const expenses = await expense.find({
+      userid: req.user.id,
+      category,
+    });
+
+    res.json({ expenses });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+  
+}
+// ------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const getexpense = async (req, res) => {
   try {
