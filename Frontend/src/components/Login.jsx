@@ -140,7 +140,7 @@ export const Login = ({ setIslogin }) => {
 
           <button className="google-btn"
             onClick={() => {
-              window.location.href = "http://localhost:5000/auth/google";
+              window.location.href = "https://expense-trackerb.onrender.com/auth/google";
             }}
           >
             <FcGoogle size={20} />
