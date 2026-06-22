@@ -17,9 +17,9 @@ Router.get("/islogin", auth , (req,res)=>
 
 Router.get("/islogout", (req, res) => {
   res.clearCookie("token", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
   });
 
   return res.json({

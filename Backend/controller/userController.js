@@ -42,9 +42,9 @@ export const login = async (req, res) => {
 });*/
 
       res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+   httpOnly: true,
+  secure: true,
+  sameSite: "none",
       });
       console.log("Cookie set:", userd._id);
       return res.status(200).json({ message: "login successfully" });

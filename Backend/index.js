@@ -72,14 +72,13 @@ app.get(
         { expiresIn: "7d" }
       );
 
-      
-  res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+    res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
 });
 
-      return res.redirect("http://localhost:5173");
+      return res.redirect("https://expense-tracker-zwsb.onrender.com");
 
     } catch (err) {
       console.log("ERROR:", err);
